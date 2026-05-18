@@ -1,0 +1,52 @@
+DATE - > 18 MAY 2026
+class Solution {
+public:
+    int minJumps(vector<int>& arr){
+        
+        map<int,vector<int>> mp;
+        for(int i=0;i<arr.size();i++){
+            mp[arr[i]].push_back(i);
+        }
+        int n = arr.size();
+        vector<bool> vis(n,false);
+        queue<int> q;
+        q.push(0);
+        vis[0] = true;
+        int ans = 0;
+        while(!q.empty()){
+            int x = q.size();
+            for(int i=0;i<x;i++){
+            int idx = q.front();
+            q.pop();
+            if(idx==(n-1)){
+                return ans;
+            }
+            
+            // case 1 jump to idx+1 
+            if((idx+1)<n && !vis[idx+1]){
+                vis[idx+1] = true;
+                q.push(idx+1);
+            }
+
+            // case 2 jump to idx-1
+            if((idx-1)>=0 && !vis[idx-1]){
+                vis[idx-1] = true;
+                q.push(idx-1);
+            }
+
+            // case 3 jump to any associated index
+            if(mp.count(arr[idx])){
+            for(auto& p:mp[arr[idx]]){
+                if(!vis[p]){
+                    vis[p] = true;
+                    q.push(p);
+                }
+            }
+            }
+            mp.erase(arr[idx]);
+            }
+            ans++;
+        }
+        return ans; 
+    }
+};
